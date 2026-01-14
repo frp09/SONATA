@@ -392,7 +392,7 @@ class CBM(object):
             tmp.extend(c.split_quads())
         self.mesh = tmp
         # ============= BALANCE WEIGHT - CUTTING HOLE ALGORITHM
-        if self.config.setup["BalanceWeight"] == True:
+        if self.config.setup["BalanceWeight"]:
             print("STATUS:\t Meshing Balance Weight")
 
             self.mesh, boundary_nodes = map_mesh_by_intersect_curve2d(self.mesh, self.BW.Curve, self.BW.wire, global_minLen)

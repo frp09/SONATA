@@ -47,10 +47,6 @@ def map_node_on_curve(node, Curve2d, theta_11, distance=1e5, **kwargs):
 
     """
 
-    # KWARGS:
-    if kwargs.get("display") != None:
-        display = kwargs.get("display")
-
     # ==================DIRECTION 1 ===============================
     Line1 = Geom2d_Line(gp_Lin2d(node.Pnt2d, gp_Dir2d(math.cos(math.radians(theta_11)), math.sin(math.radians(theta_11)))))
     # display.DisplayShape(Line1,color='BLACK')
@@ -71,17 +67,17 @@ def map_node_on_curve(node, Curve2d, theta_11, distance=1e5, **kwargs):
             dist = node.Pnt2d.Distance(Intersection2.Point(i))
             NewPnt2 = Intersection2.Point(i)
 
-    # ==================CHOOSE NEWPNT===============================
+    # ==================CHOOSE NEW POINT===============================
     try:
         if node.Pnt2d.Distance(NewPnt1) > node.Pnt2d.Distance(NewPnt2):
             node.Pnt2d = NewPnt2
         else:
             node.Pnt2d = NewPnt1
 
-    except:
+    except NameError:
         try:
             node.Pnt2d = NewPnt2
-        except:
+        except NameError:
             node.Pnt2d = NewPnt1
 
     return None
@@ -110,7 +106,7 @@ def map_mesh_by_intersect_curve2d(mesh, curve2d, wire, global_minLen, **kwargs):
 
     """
     # KWARGS:
-    if kwargs.get("display") != None:
+    if kwargs.get("display") is not None:
         display = kwargs.get("display")
     else:
         display = None
