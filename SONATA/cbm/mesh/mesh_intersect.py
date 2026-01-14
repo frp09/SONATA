@@ -10,17 +10,13 @@ import math
 # Third party modules
 # THE PYTHON SHAPELY MODULE:
 import shapely.geometry as shp_geom
-from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge,
-                                     BRepBuilderAPI_MakeWire,)
 # PythonOCC Libraries
 from OCC.Core.BRepExtrema import BRepExtrema_DistShapeShape
 from OCC.Core.GCPnts import GCPnts_QuasiUniformAbscissa
-from OCC.Core.Geom import Geom_Plane
 from OCC.Core.Geom2d import Geom2d_Line
 from OCC.Core.Geom2dAdaptor import Geom2dAdaptor_Curve
 from OCC.Core.Geom2dAPI import Geom2dAPI_InterCurveCurve
-from OCC.Core.gp import (gp_Dir, gp_Dir2d, gp_Lin2d, gp_Pln,
-                         gp_Pnt, gp_Pnt2d, gp_Vec, gp_Vec2d,)
+from OCC.Core.gp import (gp_Dir2d, gp_Lin2d, gp_Pnt2d, gp_Vec2d,)
 
 # First party modules
 from SONATA.cbm.mesh.mesh_utils import \
@@ -99,7 +95,7 @@ def map_mesh_by_intersect_curve2d(mesh, curve2d, wire, global_minLen, **kwargs):
     ----------
     mesh : list of cells
         DESCRIPTION.
-    curve2d : curve2d 
+    curve2d : curve2d
         DESCRIPTION.
     wire : OCC.topods.wire
         DESCRIPTION.

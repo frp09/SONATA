@@ -1,4 +1,4 @@
-name: UH-60A Helicopter 
+name: UH-60A Helicopter
 
 components:
     #==================== B L A D E ====================================
@@ -18,11 +18,11 @@ components:
 
         # name: 'UH-60A Advanced Composite Blade'
         outer_shape:
-                
+
             chord:
                 grid: [0.1491807, 0.17, 0.2431389, 0.4700000, 0.5000000, 0.8200000, 0.8500000, 1.0000000]
                 values: [0.28, 0.28, 0.53, 0.53, 0.5400000, 0.5400000, 0.5340000, 0.5340000]
-                                
+
             twist:
                 grid: [0.1491807, 0.17, 0.2431389, 0.7400831, 0.8794644, 0.8817095, 0.9246356, 0.9624872, 1.0000000]
                 values: [0.1711034, 0.1711034, 0.15979962, 0.0044471, -0.0223385, -0.0447642, -0.0617306, -0.0618964, -0.0431899]
@@ -71,7 +71,7 @@ components:
                    configuration:
                      -  default
                    weight: [1.0]
-    
+
 
         #-------------------- C B M ------------------------------------
         structure:
@@ -88,16 +88,16 @@ components:
                     #~- id: 1
                       #~position: [0.38, 0.62]
                       #~curvature: Null
-                      
+
                     #~- id: 2
                       #~position: [0.12, 0.88]
                       #~curvature: Null
-                
+
                 #~#........... s e g m e n t s ...........
                 #~segments:
                     #~- id: 0
                       #~filler: 12
-                      #~layup: 
+                      #~layup:
                           #~#-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           #~- [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
                           #~- [0.0, 1.00, 0.25e-3,   45, 4, 'Overwrap_Ply_2']
@@ -109,8 +109,8 @@ components:
 
                     #~- id: 1
                       #~filler: 12
-                      #~layup: 
-                          #~#-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      #~layup:
+                          #~#-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           #~- [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           #~- [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
                           #~- [0.0, 1.0, 1.5e-3, 45, 7, 'Bearing_Laminate_1']
@@ -121,8 +121,8 @@ components:
                           #~- [0.0, 1.0, 1.5e-3, 0, 7, 'Bearing_Laminate_4']
                     #~- id: 2
                       #~filler: Null
-                      #~layup: 
-                          #~#Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      #~layup:
+                          #~#Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           #~- [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           #~- [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           #~- [0.0, 1.0, 1.45e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -133,8 +133,8 @@ components:
 
                     #~- id: 3
                       #~filler: 12
-                      #~layup: 
-                          #~#Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      #~layup:
+                          #~#Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           #~- [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           #~- [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
                           #~- [0.0, 1.0, 1.5e-3, 45, 7, 'Bearing_Laminate_1']
@@ -148,29 +148,29 @@ components:
               - position: 0.25
                 trim_mass: False
                 mesh_resolution: 450
-                
+
                 #........... w e b s ...........
                 webs:
                     - id: 1
                       position: [0.43, 0.57]
                       curvature: Null
-                      
+
                     - id: 2
                       position: [0.32, 0.68]
                       curvature: Null
-                      
+
                 # #~#........... trim_mass ...........
-                # trim_mass: 
+                # trim_mass:
                 #     s: 0.5018                 #	curve coordinate position	[-]						[float]
                 #     t: 7.5e-3                  #	distance t, left of segment boundary	[m]						[float]
                 #     Diameter: 9.5e-3          #	Diameter of Balance Weight [m]	[float]
                 #     Material: 14             #   Material ID							[int]
-                    
+
                 #........... s e g m e n t s ...........
                 segments:
                     - id: 0
                       filler: 12
-                      layup: 
+                      layup:
                           #-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           - [0.44, 0.56, 0.82e-3,   0, 15, 'Erosion_Strip']
                           - [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
@@ -187,15 +187,15 @@ components:
 
                     - id: 1
                       filler: 16
-                      layup: 
-                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      layup:
+                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           - [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           - [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
 
                     - id: 2
                       filler: Null
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           - [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           - [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           - [0.0, 1.0, 1.35e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -203,39 +203,39 @@ components:
 
                     - id: 3
                       filler: 13
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
-                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy'] 
-                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler'] 
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
+                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy']
+                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler']
 
 
 #=============0.35========================
               - position: 0.40
                 trim_mass: False
                 mesh_resolution: 450
-                
+
                 #........... w e b s ...........
                 webs:
                     - id: 1
                       position: [0.43, 0.57]
                       curvature: Null
-                      
+
                     - id: 2
                       position: [0.32, 0.68]
                       curvature: Null
-                      
+
                 # #~#........... trim_mass ...........
-                # trim_mass: 
+                # trim_mass:
                 #     s: 0.5018                 #	curve coordinate position	[-]						[float]
                 #     t: 7.5e-3                  #	distance t, left of segment boundary	[m]						[float]
                 #     Diameter: 9.5e-3          #	Diameter of Balance Weight [m]	[float]
                 #     Material: 14             #   Material ID							[int]
-                    
+
                 #........... s e g m e n t s ...........
                 segments:
                     - id: 0
                       filler: 12
-                      layup: 
+                      layup:
                           #-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           - [0.44, 0.56, 0.82e-3,   0, 15, 'Erosion_Strip']
                           - [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
@@ -252,15 +252,15 @@ components:
 
                     - id: 1
                       filler: 12
-                      layup: 
-                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      layup:
+                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           - [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           - [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
 
                     - id: 2
                       filler: Null
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           - [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           - [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           - [0.0, 1.0, 1.35e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -268,28 +268,28 @@ components:
 
                     - id: 3
                       filler: 13
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
-                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy'] 
-                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler'] 
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
+                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy']
+                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler']
 
 #=============0.82========================
               - position: 0.82
                 trim_mass: False
                 mesh_resolution: 450
-                
+
                 #........... w e b s ...........
                 webs:
                     - id: 1
                       position: [0.4305, 0.5705]
                       curvature: Null
-                      
+
                     - id: 2
                       position: [0.3205, 0.6805]
                       curvature: Null
-                      
+
                 # #........... trim_mass ...........
-                # trim_mass: 
+                # trim_mass:
                 #     s: 0.504                 #	curve coordinate position	[-]						[float]
                 #     t: 7.2e-3                  #	distance t, left of segment boundary	[m]						[float]
                 #     Diameter: 9.5e-3          #	Diameter of Balance Weight [m]	[float]
@@ -299,7 +299,7 @@ components:
                 segments:
                     - id: 0
                       filler: 12
-                      layup: 
+                      layup:
                           #-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           - [0.44, 0.56, 0.82e-3,   0, 15, 'Erosion_Strip']
                           - [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
@@ -313,18 +313,18 @@ components:
                           - [0.475, 0.525, 1.0e-3, 0, 1, 'Spar4']
                           - [0.4775, 0.5225, 1.0e-3, 0, 1, 'Spar3']
                           - [0.48, 0.52, 1.0e-3, 0, 1, 'Spar5']
-                            
+
                     - id: 1
                       filler: 12
-                      layup: 
-                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      layup:
+                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           - [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           - [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
 
                     - id: 2
                       filler: Null
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           - [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           - [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           - [0.0, 1.0, 1.35e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -332,38 +332,38 @@ components:
 
                     - id: 3
                       filler: 13
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
-                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy'] 
-                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler'] 
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
+                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy']
+                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler']
 
 #=============0.93========================
               - position: 0.93
                 trim_mass: False
                 mesh_resolution: 450
-                
+
                 #........... w e b s ...........
                 webs:
                     - id: 1
                       position: [0.43, 0.57]
                       curvature: Null
-                      
+
                     - id: 2
                       position: [0.32, 0.68]
                       curvature: Null
-                      
+
                 # #~#........... trim_mass ...........
-                # trim_mass: 
+                # trim_mass:
                 #     s: 0.5018                 #	curve coordinate position	[-]						[float]
                 #     t: 7.5e-3                  #	distance t, left of segment boundary	[m]						[float]
                 #     Diameter: 9.5e-3          #	Diameter of Balance Weight [m]	[float]
                 #     Material: 14             #   Material ID							[int]
-                    
+
                 #........... s e g m e n t s ...........
                 segments:
                     - id: 0
                       filler: 12
-                      layup: 
+                      layup:
                           #-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           - [0.44, 0.56, 0.82e-3,   0, 15, 'Erosion_Strip']
                           - [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
@@ -380,15 +380,15 @@ components:
 
                     - id: 1
                       filler: 16
-                      layup: 
-                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      layup:
+                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           - [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           - [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
 
                     - id: 2
                       filler: Null
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           - [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           - [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           - [0.0, 1.0, 1.35e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -396,38 +396,38 @@ components:
 
                     - id: 3
                       filler: 13
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
-                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy'] 
-                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler'] 
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
+                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy']
+                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler']
 
 #=============1.0========================
               - position: 1.0
                 trim_mass: False
                 mesh_resolution: 450
-                
+
                 #........... w e b s ...........
                 webs:
                     - id: 1
                       position: [0.43, 0.57]
                       curvature: Null
-                      
+
                     - id: 2
                       position: [0.32, 0.68]
                       curvature: Null
-                      
+
                 # #........... trim_mass ...........
-                # trim_mass: 
+                # trim_mass:
                 #     s: 0.5018                 #	curve coordinate position	[-]						[float]
                 #     t: 7.5e-3                  #	distance t, left of segment boundary	[m]						[float]
                 #     Diameter: 9.5e-3          #	Diameter of Balance Weight [m]	[float]
                 #     Material: 14             #   Material ID							[int]
-                    
+
                 #........... s e g m e n t s ...........
                 segments:
                     - id: 0
                       filler: 12
-                      layup: 
+                      layup:
                           #-[Start[-], End[-], thickness[m], Orientation [deg], MatID[int], 'name'[str]]
                           - [0.44, 0.56, 0.82e-3,   0, 15, 'Erosion_Strip']
                           - [0.00, 1.00, 0.25e-3,  0, 4, 'Overwrap_Ply_1']
@@ -445,15 +445,15 @@ components:
 
                     - id: 1
                       filler: 12
-                      layup: 
-                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]	
+                      layup:
+                          #-[Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],'name'[str]]
                           - [0.0, 1.00, 0.8e-3, 45, 1, 'Spar1']
                           - [0.0, 1.00, 0.8e-3, -45, 1, 'Spar2']
 
                     - id: 2
                       filler: Null
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
                           - [0.0, 1.0, 1.35e-3, 0, 3, 'Spar_Cap_Ply_1']
                           - [0.0, 1.0, 1.35e-3, 45, 3, 'Spar_Cap_Ply_2']
                           - [0.0, 1.0, 1.35e-3, -45, 3, 'Spar_Cap_Ply_3']
@@ -461,10 +461,10 @@ components:
 
                     - id: 3
                       filler: 13
-                      layup: 
-                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]	
-                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy'] 
-                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler'] 
+                      layup:
+                          #Start[-],End[-],thickness[mm],Orientation [deg],MatID[int],name[str]
+                          - [0.0, 1.0, 1e-5, 0, 4, 'dummy']
+                          # - [0.95, 0.05, 3.1e-3, 45, 4, 'TE_Filler']
 
 
 #==================== A I R F O I L S ==================================
@@ -523,9 +523,9 @@ airfoils:
                       grid: [-3.141592653589793, 3.141592653589793]
                       values: [0.0, 0.0]
 
- 
+
     - name: sc1094r8
-      coordinates: 
+      coordinates:
         x: [1.0, 0.9965117, 0.9864605, 0.9764083, 0.9663576, 0.9563136, 0.9462701, 0.9362255,
             0.9261814, 0.9161372, 0.8960472, 0.8759568, 0.8558658, 0.8357743, 0.8156822, 0.7955904,
             0.7754967, 0.7554021, 0.7353065, 0.7152095, 0.6951115, 0.675013, 0.6549124, 0.6348101,
@@ -635,16 +635,16 @@ materials:
     name: ud_cf_ht_ep_060
     description: basic unidirektional ht-carbon fiber composite with epoxy matrix (FVC of 60%)
     source: elasitc properties derived from Schuermann, (p.184, 417) with a semi-empiric Puck approach
-    orth: 1                     
+    orth: 1
     rho: 1.536e3                         #kg/m**3
     E_1: 139.360e9                       #N/m**2, 0° Tensile Modulus
     E_2: 12.615e9                        #N/m**2, 90° Tensile Modulus
     E_3: 12.615e9                        #N/m**2, E_3 = E_2
     G_12: 5.892e9                        #N/m**2, G_ij, is the shear modulus in direction j on the plane whose normal is in direction  i,
     G_13: 5.892e9                        #N/m**2, G_13 = G_12
-    G_23: 9.332e9                        #N/m**2, 
+    G_23: 9.332e9                        #N/m**2,
     nu_12: 0.025                         #-, nu_ij is the Poisson's ratio that corresponds to a contraction in direction j when an extension is applied in direction i.
-    nu_13: 0.025                         #-, nu_13 = nu_12 
+    nu_13: 0.025                         #-, nu_13 = nu_12
     nu_23: 0.352                         #-,
     alpha_11:  Null                      #1/K Coefficient of thermal expansion
     alpha_22:  Null                      #1/K alpha_22 = alpha_33
@@ -653,7 +653,7 @@ materials:
     Xc: 1200e6                           #N/m**2,, 0° compressive strenght
     Yt: 60e6                             #N/m**2,, 90° tensile strenght
     Yc: 200e6                            #N/m**2,, 90° compressive strenght
-    S21: 90e6                            #N/m**2,, in-/out of plane shear strength 
+    S21: 90e6                            #N/m**2,, in-/out of plane shear strength
 
 
   - id: 2
@@ -671,9 +671,9 @@ materials:
     nu_12: 0.012
     nu_13: 0.012
     nu_23: 0.334
-    alpha_11:  Null                    
-    alpha_22:  Null                    
-    alpha_33:  Null                    
+    alpha_11:  Null
+    alpha_22:  Null
+    alpha_33:  Null
     Xt: Null
     Xc: Null
     Yt: Null
@@ -696,9 +696,9 @@ materials:
     nu_12: 0.020
     nu_13: 0.020
     nu_23: 0.352
-    alpha_11:  Null                    
-    alpha_22:  Null                    
-    alpha_33:  Null                    
+    alpha_11:  Null
+    alpha_22:  Null
+    alpha_33:  Null
     Xt: Null
     Xc: Null
     Yt: Null
@@ -721,16 +721,16 @@ materials:
     nu_12: 0.087
     nu_13: 0.087
     nu_23: 0.342
-    alpha_11:  Null                    
-    alpha_22:  Null                    
-    alpha_33:  Null                    
+    alpha_11:  Null
+    alpha_22:  Null
+    alpha_33:  Null
     Xt: Null
     Xc: Null
     Yt: Null
     Yc: Null
     S21: Null
-    
-    
+
+
   - id: 5
     name: ud_gf_s_ep_060
     description: nodescription
@@ -746,9 +746,9 @@ materials:
     nu_12: 0.075
     nu_13: 0.075
     nu_23: 0.343
-    alpha_11:  Null                    
-    alpha_22:  Null                    
-    alpha_33:  Null                    
+    alpha_11:  Null
+    alpha_22:  Null
+    alpha_33:  Null
     Xt: Null
     Xc: Null
     Yt: Null
@@ -771,9 +771,9 @@ materials:
     nu_12: 0.028
     nu_13: 0.028
     nu_23: 0.404
-    alpha_11:  Null                    
-    alpha_22:  Null                    
-    alpha_33:  Null                    
+    alpha_11:  Null
+    alpha_22:  Null
+    alpha_33:  Null
     Xt: Null
     Xc: Null
     Yt: Null
@@ -811,7 +811,7 @@ materials:
   - id: 8
     name: steel
     description: 25CrMo4
-    source: 
+    source:
     orth: 0
     rho: 7.75e3
     E: 210e9
@@ -823,13 +823,13 @@ materials:
 
   - id: 9
     name: aluminium
-    description: EN AW 7075 
+    description: EN AW 7075
     source: gleich.de technical data sheet
-    orth: 0     
+    orth: 0
     rho: 2.80e3
     E: 71e9
     nu: 0.33
-    alpha: 23.4e-6 
+    alpha: 23.4e-6
     YS: 470e6
     UTS: 540e6
 
@@ -837,13 +837,13 @@ materials:
   - id: 10
     name: titanium
     description: 3.7164 / Ti6Al4V (Grade 5)
-    source: hsm-stahl.de technical data sheet 
+    source: hsm-stahl.de technical data sheet
     orth: 0
     rho: 4.43e3
     E: 114e9
-    nu: 0.342       
+    nu: 0.342
     alpha: 8.9e-6
-    YS: 830e6               
+    YS: 830e6
     UTS: 895
 
 
@@ -852,9 +852,9 @@ materials:
     description: 99.9Pb
     source: azom.com
     orth: 0
-    rho: 11.35e3      
-    E: 14e9       
-    nu: 0.44      
+    rho: 11.35e3
+    E: 14e9
+    nu: 0.44
     alpha: 29.1e-6
     YS: 8e6                 # MPa, yield tensile strenght
     UTS: 16e6               # MPa, ultimate tensile strenght
@@ -864,7 +864,7 @@ materials:
     description:
     source: matweb.com
     orth: 0
-    rho:  19.3e3 
+    rho:  19.3e3
     E: 400e9
     nu: 0.28
     alpha: Null
@@ -876,7 +876,7 @@ materials:
     description: MP35N, cold rolled tensile strength
     source: www.hcstarck.com
     orth: 0
-    rho:  8.43e3 
+    rho:  8.43e3
     E: 233e9
     nu: 0.40
     alpha: Null
@@ -888,7 +888,7 @@ materials:
     description:
     source: matweb.com
     orth: 0
-    rho:  10.0e3 
+    rho:  10.0e3
     E: 100e9
     nu: 0.28
     alpha: Null
@@ -900,30 +900,30 @@ materials:
 
   - id: 12
     name: foam
-    description: rohacell51_ig-f      
+    description: rohacell51_ig-f
     source: evonic rohacell datasheet
-    orth: 0     
-    rho: 0.052e3    
-    E: 70e6     
-    nu: 0.4     
+    orth: 0
+    rho: 0.052e3
+    E: 70e6
+    nu: 0.4
     alpha: 4.71e-5
 
 
   - id: 13
     name: honeycomb_al
     description: Alu Honeycomb HexWeb 5.2-1/4-25 (3003) - Hexcel Composites 2001
-    source:  Schwingshackl, C.W. - Determination of Honeycomb Material Properties - Existing Theories and an Alternative Dynamic Approach    
+    source:  Schwingshackl, C.W. - Determination of Honeycomb Material Properties - Existing Theories and an Alternative Dynamic Approach
     orth:   1
     rho:     0.083e3                        #g/cm3
-    E_1:     0.0189e9                       
-    E_2:     0.0189e9                                                     
-    E_3:     1.89e9                       
-    G_12:     0.369e9                       
-    G_13:     0.002935e9                    
-    G_23:     0.217e9                       
-    nu_12:    0.1                        
-    nu_13:     0.1                        
-    nu_23:     0.1 
+    E_1:     0.0189e9
+    E_2:     0.0189e9
+    E_3:     1.89e9
+    G_12:     0.369e9
+    G_13:     0.002935e9
+    G_23:     0.217e9
+    nu_12:    0.1
+    nu_13:     0.1
+    nu_23:     0.1
     alpha_11:  Null                        #1/C°
     alpha_22:  Null                         #1/C°
     alpha_33:  Null                         #1/C°

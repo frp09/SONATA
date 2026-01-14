@@ -178,20 +178,20 @@ class Segment(object):
 
     def det_weight_Pnt2d(self, s, t):
         """
-        determine the position of the 2d Point that describes the balance 
+        determine the position of the 2d Point that describes the balance
         weight
-        
+
         Parameters
         --------
         s : float
             nondimensional s position between Start S1 and End S2
         t : float
             distance in normaldirection left of the boundary_BesplineLst
-        
+
         Returns:
         -------
         p1 : gp_Pnt2d
-        
+
         """
         p0, v1, v2 = get_BSplineLst_D2(self.BSplineLst, s, 0, 1)
         # print('det_weight_Pnt2d:', p0.Coord(), 's', s)
