@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/WISDEM/SONATA/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/WISDEM/SONATA/actions/workflows/python-package-conda.yml)
+[![Build Status](https://github.com/NLRWindSystems/SONATA/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/NLRWindSystems/SONATA/actions/workflows/python-package-conda.yml)
 
 # SONATA
 
@@ -28,7 +28,7 @@ You should do this in the folder that you want to clone SONATA to.
 ```
 conda config --add channels conda-forge
 conda config --add channels tpaviot
-git clone git@github.com:WISDEM/SONATA.git
+git clone git@github.com:NLRWindSystems/SONATA.git
 cd SONATA
 ```
 If you have a mac with a newer chip, run the following:
