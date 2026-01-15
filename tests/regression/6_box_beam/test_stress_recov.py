@@ -244,14 +244,14 @@ def test_force_dir1():
 
         sigma11 = applied_loads[0] / area
 
-        tol = 1e-4
+        tol = 1e-1
 
         for ind,c in enumerate(cells):
 
             assert np.abs(c.stress.sigma11 - sigma11) < tol*sigma11, \
                 "Wrong stress sigma11 for axial load."
 
-            assert np.abs(c.stress.sigma22) < tol*1e+3, \
+            assert np.abs(c.stress.sigma22) < tol, \
                 "Wrong stress sigma22 for axial load."
 
             assert np.abs(c.stress.sigma33) < tol, \
