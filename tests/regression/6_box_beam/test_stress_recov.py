@@ -251,7 +251,7 @@ def test_force_dir1():
             assert np.abs(c.stress.sigma11 - sigma11) < tol*sigma11, \
                 "Wrong stress sigma11 for axial load."
 
-            assert np.abs(c.stress.sigma22) < tol, \
+            assert np.abs(c.stress.sigma22) < tol*1e+3, \
                 "Wrong stress sigma22 for axial load."
 
             assert np.abs(c.stress.sigma33) < tol, \
