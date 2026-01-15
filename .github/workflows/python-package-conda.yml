@@ -72,7 +72,7 @@ jobs:
         run: |
           cd examples/5_UH60
           export MPLBACKEND=Agg
-          python generic_uh60a.py
+          python 5_uh60.py
 
       - name: Run example 6
         run: |
