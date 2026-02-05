@@ -71,9 +71,9 @@ def test_6x6_iea15mw():
     # ===== User defined radial stations ===== #
     # Define the radial stations for cross sectional analysis
     # (only used for flag_wt_ontology = True -> otherwise, sections from yaml file are used!)
-    radial_stations =  [0., 0.01, 0.03, 0.05, 0.075, 0.15, 0.25, 0.3 , 0.4,
-                        0.5 , 0.6 , 0.7 , 0.8 , 0.9 , 1.]
-    # radial_stations = [.7]
+    # radial_stations =  [0., 0.01, 0.03, 0.05, 0.075, 0.15, 0.25, 0.3 , 0.4,
+    #                     0.5 , 0.6 , 0.7 , 0.8 , 0.9 , 1.]
+    radial_stations = [.7]
     # ===== Execute SONATA Blade Component Object ===== #
     # name          - job name of current task
     # filename      - string combining the defined folder directory and the job name

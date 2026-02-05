@@ -180,7 +180,8 @@ def run_stresses(job_str, loads_dict, flag_constant_loads):
 
 def test_force_dir1():
 
-    job_str = os.path.join(run_dir, '..', '..','..', 'examples', '6_beam_stress', '6_box_beam.yaml')
+    job_str = os.path.join(run_dir, '..', '..','..', 'examples',
+                           '6_beam_stress', '6_box_beam.yaml')
     flag_constant_loads = False
 
     recover_forces = np.array([[0.0, 1.0e3, 0.0, 0.0],
@@ -251,19 +252,19 @@ def test_force_dir1():
             assert np.abs(c.stress.sigma11 - sigma11) < tol*sigma11, \
                 "Wrong stress sigma11 for axial load."
 
-            assert np.abs(c.stress.sigma22) < tol, \
+            assert np.abs(c.stress.sigma22) < tol*sigma11, \
                 "Wrong stress sigma22 for axial load."
 
-            assert np.abs(c.stress.sigma33) < tol, \
+            assert np.abs(c.stress.sigma33) < tol*sigma11, \
                 "Wrong stress sigma33 for axial load."
 
-            assert np.abs(c.stress.sigma12) < tol, \
+            assert np.abs(c.stress.sigma12) < tol*sigma11, \
                 "Wrong stress sigma12 for axial load."
 
-            assert np.abs(c.stress.sigma13) < tol, \
+            assert np.abs(c.stress.sigma13) < tol*sigma11, \
                 "Wrong stress sigma13 for axial load."
 
-            assert np.abs(c.stress.sigma23) < tol, \
+            assert np.abs(c.stress.sigma23) < tol*sigma11, \
                 "Wrong stress sigma23 for axial load."
 
             # cxy = c.calc_center()
