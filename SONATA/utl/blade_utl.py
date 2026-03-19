@@ -153,6 +153,8 @@ def interp_airfoil_position(airfoil_position, airfoils, grid_loc, f_chord=None, 
         pa1 = None
         pa2 = None
 
+    #print('INTERPOLATION VALUES: ', chord1, chord2, pa1, pa2)   #4 debugging
+
     # Call with all parameters (backward compatible if all None)
     return af1.interpolate_chord_scaled(af2, k, chord1, chord2, pa1, pa2)
 
