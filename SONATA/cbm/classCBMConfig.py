@@ -10,10 +10,9 @@ from collections import OrderedDict
 
 # Third party modules
 import numpy as np
-import yaml
 
 # First party modules
-from SONATA.classMaterial import find_material, read_materials
+from SONATA.classMaterial import find_material
 from SONATA.anbax.classANBAXConfig import ANBAXConfig
 
 if __name__ == "__main__":
@@ -22,33 +21,33 @@ if __name__ == "__main__":
 
 class CBMConfig(object):
     """
-    Second Generation Configuration Class for the SONATA_CBM Disciplin  
-    
+    Second Generation Configuration Class for the SONATA_CBM Disciplin
+
     Attributes
     ----------
     filename : str
         filename, when config filename is given.
-        
+
     setup: dict
-        contains the following fields: datasource, material_db, 
+        contains the following fields: datasource, material_db,
         radial_station, Theta, scale_factor, BalanceWeight and mesh_resolution
-    
+
     webs: OrderedDict
-        Ordered Dictionary that contains subdictionaries of with Pos1 and Pos2 
+        Ordered Dictionary that contains subdictionaries of with Pos1 and Pos2
         keys
-    
+
     segments: OrderedDict
-         Ordered Dictionary that contains subdictionaries with Corematerial, 
+         Ordered Dictionary that contains subdictionaries with Corematerial,
          Layup and Layup_names as keys
-    
+
     bw: dict
-    
+
     flags: dict
 
     vabs_cfg: VABSConfig
     anbax_cfg: ANBAXConfig
 
-    
+
     """
 
     __slots__ = ("filename", "setup", "webs", "segments", "bw", "flags", "vabs_cfg", "anbax_cfg")
@@ -69,7 +68,7 @@ class CBMConfig(object):
     def read_yaml_cbm(self, yml, materials):
         """ read the yml dictionary of a cross section and assign class
         attributes to this configuration object
-        
+
         Parameters:
         ----------
         yml : dict
@@ -106,7 +105,7 @@ class CBMConfig(object):
         for i, s in enumerate(yml.get("segments")):
             d = {}
             key = s.get("id")
-            if s.get("filler") == None:
+            if s.get("filler") is None:
                 d["CoreMaterial"] = 0
 
             elif isinstance(s.get("filler"), int):
@@ -116,13 +115,23 @@ class CBMConfig(object):
                 d["CoreMaterial"] = find_material(materials, "name", s.get("filler")).id
 
             layerlst = s.get("layup")
-            if layerlst and all(isinstance(l, list) for l in layerlst):
+            if layerlst and all(isinstance(lay, list) for lay in layerlst):
                 layerlst = s.get("layup")
                 d["Layup_names"] = np.asarray(layerlst)[:, 5].tolist()
-                d["Layup"] = np.asarray(layerlst)[:, :5].astype(float)               
-            elif layerlst and all(isinstance(l, dict) and l for l in layerlst):
-                d["Layup"] = np.asarray([[l.get("start"), l.get("end"), l.get("thickness"), l.get("orientation"), find_material(materials, "name", l.get("material_name")).id] for l in layerlst])
-                d["Layup_names"] = [l.get("name") for l in layerlst]
+                d["Layup"] = np.asarray(layerlst)[:, :5].astype(float)
+            elif layerlst and all(isinstance(lay, dict) and lay for lay in layerlst):
+
+                d["Layup"] = np.asarray([
+                    [lay.get("start"),
+                     lay.get("end"),
+                     lay.get("thickness"),
+                     lay.get("orientation"),
+                     find_material(materials,
+                                   "name",
+                                   lay.get("material_name")).id]
+                    for lay in layerlst])
+
+                d["Layup_names"] = [lay.get("name") for lay in layerlst]
 
             else:
                 d["Layup"] = np.empty((0, 0))
@@ -134,20 +143,3 @@ class CBMConfig(object):
         if yml.get("trim_mass"):
             self.bw = yml.get("trim_mass")  #
             self.setup["BalanceWeight"] = True
-
-
-if __name__ == "__main__":
-
-    # classic configuration file:
-    os.chdir("/media/gu32kij/work/TPflumm/SONATA")
-    # fname = 'jobs/VariSpeed/advanced/sec_config.yml'
-    fname = "examples/sec_config.yml"
-    cfg = CBMConfig(fname)
-
-    with open("jobs/VariSpeed/UH-60A_adv.yml", "r") as myfile:
-        inputs = myfile.read()
-
-    yml = yaml.load(inputs)
-    materials = read_materials(yml.get("materials"))
-    yml = yml.get("components").get("blade").get("2d_fem").get("sections")[0]
-    wt_cfg = CBMConfig(yml, materials)

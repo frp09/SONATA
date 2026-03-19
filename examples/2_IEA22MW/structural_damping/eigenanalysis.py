@@ -285,7 +285,7 @@ for key in output_data.keys():
 # Write out the yaml file of the modal information
 with open(output_fname, 'w') as file:
     yaml.dump(output_data, file)
-    
+
 
 ###############################################################################
 ######## Load Some OTTR Mode Data to Run                               ########
@@ -337,7 +337,7 @@ for station_ind, map_curr in enumerate(map_data):
 
 # Loop over modes
 for mode_ind in range(N_modes):
-    
+
     force_moments = np.vstack((np.array(output_data['FzL'])[:, mode_ind],
                               np.array(output_data['FyL'])[:, mode_ind],
                               -np.array(output_data['FxL'])[:, mode_ind],
@@ -351,33 +351,33 @@ for mode_ind in range(N_modes):
         # second index is element number
         stresses = np.einsum('ijk,j->ik', map_curr['fc_to_stress_m'],
                             force_moments[:, station_ind])
-        
+
         strains = np.einsum('ijk,j->ik', map_curr['fc_to_strain_m'],
                             force_moments[:, station_ind])
-        
+
         # energy densities at each element and each station
         energy_densities = 0.5*stresses * strains
-        
+
         # energy scaled by volume for each element (area and length quadrature
         # weight)
         energy = energy_densities * map_curr['elem_areas'].reshape(1, -1) \
                     * quad_length_weights[station_ind]
-        
+
         # loop over materials and add up energies for each direction
         for mat_ind, mat_name in enumerate(map_curr['material_names']):
-            
+
             elem_mask = map_curr['elem_materials'] == mat_ind
 
             if elem_mask.sum() > 0:
-                
+
                 # first index for each material is direction with order
                 # [11, 22, 33, 23, 13, 12]
-                
-                
+
+
                 # sum energy over elements and then over stations
                 energy_dict[mat_name][:, mode_ind] \
                     += energy[:, elem_mask].sum(axis=1)
-                
+
 ###############################################################################
 ######## For a given mode, print energy fractions                      ########
 ###############################################################################
@@ -390,17 +390,17 @@ mode_energy = np.zeros(N_modes)
 for mode_ind in range(N_modes):
     print('Mode {}:'.format(mode_ind + 1))
     for key in energy_dict.keys():
-        
+
         mode_energy[mode_ind] += energy_dict[key][:, mode_ind].sum()
-    
+
     for key in energy_dict.keys():
         print('{} Energy Fractions: {}'.format(key,
                        energy_dict[key][:, mode_ind]/mode_energy[mode_ind]))
-        
+
         energy_dict[key][:, mode_ind] = energy_dict[key][:, mode_ind] \
                                             / mode_energy[mode_ind]
 
-    
+
     # Replace the energy dictionary with the fraction for each mode
 
 
@@ -433,13 +433,12 @@ with open(output_fname_energy, 'w') as file:
 # Order is [11, 22, 33, 23, 13, 12]
 loss_factors = {'glass_uniax' : np.array([1.49e-3, 7.16e-3, 7.16e-3,
                                        6.62e-3, 6.62e-3, 6.62e-3]),
-                'carbon_uniax' : np.array([4.32e-4, 4.614e-3, 4.614e-3,
-                                       4.669e-3, 4.669e-3, 4.669e-3]), # Imperial
+                'carbon_uniax' : np.array([4.69e-4, 5.61e-3, 5.61e-3,
+                                       5.61e-3, 5.61e-3, 5.61e-3]),
                 'glass_biax' : np.array([7.04e-3, 7.04e-3, 7.16e-3,
                                       6.62e-3, 6.62e-3, 3.01e-3]),
-                'glass_triax' : (np.array([7.04e-3, 7.04e-3, 7.16e-3,
-                                      6.62e-3, 6.62e-3, 3.01e-3]) + np.array([1.49e-3, 7.16e-3, 7.16e-3,
-                                       6.62e-3, 6.62e-3, 6.62e-3]))/2, # average of  UD and BX GFRP
+                'glass_triax' : np.array([4.05E-03, 7.00E-03, 7.16E-03,
+                                       6.62E-03, 6.62E-03, 4.82E-03]),
                 'Adhesive' : np.array([1.3e-2]*6),
                 'medium_density_foam' : np.array([1.3e-2]*6), # Same of adhesive
                 'gelcoat' : np.array([1.3e-2]*6), # same of gelcoat
@@ -475,6 +474,9 @@ sonata_zeta = 0.5 * (energy_fracs_mat @ loss_factors_vec)
 
 print("Critical damping ratios (%):")
 print(sonata_zeta*100.)
+critical_damping_ratios_file = os.path.join(run_dir, 'critical_damping_ratios.txt')
+np.savetxt(critical_damping_ratios_file, sonata_zeta*100.)
+
 
 damp_contributions = np.zeros((N_modes, len(loss_factors)))
 energy_contributions = np.zeros((N_modes, len(loss_factors)))

@@ -3,22 +3,24 @@ channels:
   - defaults
 
 dependencies:
-  - pythonocc-core 
   - fenics
-  - pint 
-  - intervaltree 
-  - matplotlib 
-  - pyyaml 
-  - git 
-  - spyder 
-  - palettable 
-  - openmdao
+  - git
+  - intervaltree
+  - matplotlib
   - mshr
-  - pytest
+  - openmdao
+  - palettable
+  - pint
   - pip
+  - pytest
+  - pythonocc-core
+  - pyyaml
+  - pre-commit
+  - spyder
   - pip:
-    - shapely 
-    - triangle 
+    - shapely
+    - triangle
+    - windIO >=2.0,<3.0
 
 variables:
   PIP_EXTRA_INDEX_URL: https://pypi.org/simple

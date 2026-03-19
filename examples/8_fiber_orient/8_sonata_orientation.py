@@ -76,15 +76,15 @@ if custom_mesh:
                       [ 1.0,  0.5, 0.0],
                       [ 1.0, -0.5, 0.0],
                       [-1.0, -0.5, 0.0]])
-    
+
     print("Choose of these two lines for `cells` to flip theta_1 "
           + "between 0 and 180. Theta_1 varies by 180 between opposite sides"
           + " of the airfoil.")
     # cells = np.array([[3, 0, 1, 2]])
     cells = np.array([[1, 2, 3, 0]])
-    
+
     # check job.materials
-    MatID = 2*np.ones(1)
+    MatID = np.ones(1)
 
     job.blade_custom_mesh(nodes, cells, MatID, theta_3=15)
 
@@ -119,10 +119,10 @@ if flag_constant_loads:
     # moments, Nm (M1: torsional moment,
     #              M2: bending moment about x, (axis parallel to chord)
     #              M3: bending moment around y)
-    
+
     Loads_dict = {"Forces":[1.0e6, 0.0, 0.0],
                   "Moments":[0.0,0.0,0.0]}
-    
+
     # Loads_dict = {"Forces":[1.0e4*np.cos(np.radians(15)),
     #                         1.0e4*np.sin(np.radians(15)),
     #                         0.0],
@@ -153,7 +153,7 @@ mu1 = 2*zeta[0]/omega[0]
 mu2 = 2*zeta[1]/omega[1]
 mu3 = 2*zeta[2]/omega[2]
 mu = np.array([mu1, mu2, mu3, mu2, mu1, mu3])
-beam_struct_eval(flags_dict, Loads_dict, radial_stations, job, run_dir, job_str, mu)
+beam_struct_eval(job_name, flags_dict, Loads_dict, radial_stations, job, run_dir, job_str, mu)
 
 # ===== PLOTS ===== #
 # job.blade_plot_attributes()
@@ -185,28 +185,28 @@ if not custom_mesh:
     if flag_constant_loads:
         reference_moments = Loads_dict['Moments']
         reference_forces = Loads_dict['Forces']
-    
+
     else:
         # Take forces/moments at the root.
         reference_moments = Loads_dict['Moments'][0, 1:]
         reference_forces = Loads_dict['Forces'][0, 1:]
-    
+
     print('\n\nAnalytical Stresses for Rectangular Input:')
-    
+
     thickness = 0.1
-    
+
     height_outer = 1 #m
     width_outer = 2 #m
-    
-    
+
+
     height_inner = height_outer - 2*thickness # m
     width_inner = width_outer - 2*thickness # m
-    
+
     Ix = (1/12)*((height_outer**3)*width_outer - (height_inner**3)*width_inner)
     Iy = (1/12)*((width_outer**3)*height_outer - (width_inner**3)*height_inner)
-    
+
     area = height_outer*width_outer - height_inner*width_inner
-    
+
     print('\nAverage sigma11 for just Fx is: {:.2f}'.format(
         reference_forces[0]/area))
 
@@ -231,12 +231,12 @@ for coord_ind, desired_coords in enumerate(desired_coords_list):
     dist = np.zeros(len(cells))
     theta_1 = np.zeros(len(cells))
     theta_3 = np.zeros(len(cells))
-    
+
     for ind,c in enumerate(cells):
         dist[ind] = np.linalg.norm(c.calc_center() - desired_coords)
         theta_1[ind] = c.theta_1[0]
         theta_3[ind] = c.theta_3
-    
+
     cell_ind = np.argmin(dist)
     cell_list[coord_ind] = cells[cell_ind]
 
@@ -256,7 +256,7 @@ print(cell_list[0].stress.tensor)
 if not custom_mesh:
     print("Stress Tensor (global coords) - bottom: ")
     print(cell_list[1].stress.tensor)
-    
+
     print("Stress Tensor (global coords) - leading edge: ")
     print(cell_list[2].stress.tensor)
 
@@ -268,7 +268,7 @@ print(cell_list[0].stressM.tensor)
 if not custom_mesh:
     print("Stress Tensor (local coords) - bottom: ")
     print(cell_list[1].stressM.tensor)
-    
+
     print("Stress Tensor (local coords) - leading edge: ")
     print(cell_list[2].stressM.tensor)
 
