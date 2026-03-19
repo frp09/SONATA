@@ -240,13 +240,13 @@ class Blade(Component):
             self.materials = read_materials(yml.get('materials'), viscoelastic_yaml=kwargs.get('viscoelastic_yaml', None))
 
             self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
-            
-            
+
+
     # def __init__(self, *args, **kwargs):
         # super().__init__(*args, **kwargs)
         # self.beam_properties = None
         # self.loft=None
-        
+
         # if 'filename' in kwargs:
             # filename = kwargs.get('filename')
             # with open(filename, 'r') as myfile:
@@ -254,10 +254,10 @@ class Blade(Component):
                 # yml = yaml.load(inputs, Loader = yaml.FullLoader)
                 # self.yml = yml
 
-            
+
             # airfoils = [Airfoil(af) for af in yml.get('airfoils')]
             # self.materials = read_materials(yml.get('materials'))
-            
+
             # self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
 
         self.true_twist = None

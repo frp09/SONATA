@@ -85,7 +85,7 @@ def interp_loads(loads, grid_loc):
 def interp_airfoil_position(airfoil_position, airfoils, grid_loc, f_chord=None, f_pa=None):
     """
     Interpolate airfoil at a given spanwise position, optionally accounting for chord scaling and pitch axis.
-    
+
     Parameters
     ----------
     airfoil_position: tuple
@@ -104,7 +104,7 @@ def interp_airfoil_position(airfoil_position, airfoils, grid_loc, f_chord=None, 
         Function that returns pitch_axis (nondimensional fraction of chord) at any grid location.
         If provided along with f_chord, enables pitch-axis-aware interpolation for more
         physically accurate blade section morphing. Default is None.
-        
+
     Returns
     -------
     Airfoil
