@@ -174,12 +174,40 @@ class Blade(Component):
                 inputs  = myfile.read()
                 yml = yaml.load(inputs, Loader = yaml.FullLoader)
                 self.yml = yml
+            
+            airfoils = [Airfoil(af) for af in yml.get('airfoils')]
+            self.materials = read_materials(yml.get('materials'))
+            
+            self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
+            
+        elif 'weis_dict' in kwargs:
+            yml = kwargs.get('weis_dict')
+            self.yml = yml
 
             
             airfoils = [Airfoil(af) for af in yml.get('airfoils')]
             self.materials = read_materials(yml.get('materials'))
             
             self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
+            
+            
+    # def __init__(self, *args, **kwargs):
+        # super().__init__(*args, **kwargs)
+        # self.beam_properties = None
+        # self.loft=None
+        
+        # if 'filename' in kwargs:
+            # filename = kwargs.get('filename')
+            # with open(filename, 'r') as myfile:
+                # inputs  = myfile.read()
+                # yml = yaml.load(inputs, Loader = yaml.FullLoader)
+                # self.yml = yml
+
+            
+            # airfoils = [Airfoil(af) for af in yml.get('airfoils')]
+            # self.materials = read_materials(yml.get('materials'))
+            
+            # self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
 
         self.true_twist = None
             
@@ -430,7 +458,7 @@ class Blade(Component):
                                          tmp_blra[:,0], tmp_bera[:,0],
                                          tmp_pa[:,0], arr[:,0], cs_pos))))
 
-        self.airfoils = np.asarray([[x, interp_airfoil_position(airfoil_position, airfoils, x)] for x in x])
+        self.airfoils = np.asarray([[x, interp_airfoil_position(airfoil_position, airfoils, x, f_chord=self.f_chord, f_pa=self.f_pa)] for x in x])
         self.blade_ref_axis = np.hstack((np.expand_dims(x, axis=1), self.f_blade_ref_axis.interpolate(x)[0]))
         self.beam_ref_axis = np.hstack((np.expand_dims(x, axis=1), self.f_beam_ref_axis.interpolate(x)[0]))
         self.chord = np.vstack((x, self.f_chord(x))).T
