@@ -247,9 +247,9 @@ def plot_cells(cells,nodes, attr1, materials, VABSProperties=None, title='None',
         # fname = kw['savepath'].split('.')[0]+'_'+datestr+'.'+kw['savepath'].split('.')[1]
 
         if 'opt_var' in kw:
-            fname = kw['savepath'] + '/figures/blade_section_' + kw['section'] + '_optvar_' + kw['opt_var'] + '.pdf'
+            fname = kw['savepath'] + '/figures/blade_section_' + kw['section'] + '_optvar_' + kw['opt_var'] + '.svg'
         else:
-            fname = kw['savepath']+'/figures/blade_section_'+kw['section']+'.pdf'
+            fname = kw['savepath']+'/figures/blade_section_'+kw['section']+'.svg'
         # print(fname)
         # tmp_fig = plt.gcf()
         tmp_fig = fig

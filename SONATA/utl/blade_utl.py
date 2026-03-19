@@ -83,16 +83,33 @@ def interp_loads(loads, grid_loc):
     return d
 
 
-def interp_airfoil_position(airfoil_position, airfoils, grid_loc):
+def interp_airfoil_position(airfoil_position, airfoils, grid_loc, f_chord=None, f_pa=None):
     """
-    
+    Interpolate airfoil at a given spanwise position, optionally accounting for chord scaling and pitch axis.
     
     Parameters
     ----------
     airfoil_position: tuple
         ([0.3, 1.0], ['n0012', 'n0012'])
+        Grid positions and corresponding airfoil labels
     airfoils: list
         [Airfoil: n0012, Airfoil: naca23012]
+        Available airfoil objects
+    grid_loc : float
+        Nondimensional spanwise position for interpolation
+    f_chord : callable, optional
+        Function that returns chord at any grid location. If provided, enables
+        chord-scaled interpolation for more accurate blade section morphing.
+        Default is None (uses standard nondimensional interpolation).
+    f_pa : callable, optional
+        Function that returns pitch_axis (nondimensional fraction of chord) at any grid location.
+        If provided along with f_chord, enables pitch-axis-aware interpolation for more
+        physically accurate blade section morphing. Default is None.
+        
+    Returns
+    -------
+    Airfoil
+        Interpolated airfoil at grid_loc
     """
 
     # TBD: Extrapolation
@@ -120,8 +137,24 @@ def interp_airfoil_position(airfoil_position, airfoils, grid_loc):
     if af1 == af2:
         return af1
 
-    # return transformed airfoil
-    return af1.transformed(af2, k)
+    # Extract chord values if function provided
+    if f_chord is not None:
+        chord1 = float(f_chord(iv_val[0]))
+        chord2 = float(f_chord(iv_val[1]))
+    else:
+        chord1 = None
+        chord2 = None
+
+    # Extract pitch axis values if function provided
+    if f_pa is not None:
+        pa1 = float(f_pa(iv_val[0]))
+        pa2 = float(f_pa(iv_val[1]))
+    else:
+        pa1 = None
+        pa2 = None
+
+    # Call with all parameters (backward compatible if all None)
+    return af1.interpolate_chord_scaled(af2, k, chord1, chord2, pa1, pa2)
 
 
 def make_loft(elements, solid=False, ruled=False, tolerance=1e-6, 

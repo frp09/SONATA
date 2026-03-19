@@ -478,6 +478,13 @@ def discretize_BSplineLst(BSplineLst, Deflection=2e-4, AngularDeflection=0.02, C
         None
     return npArray
 
+def remove_near_duplicates(points, tol):
+    """Remove near-duplicate points from a list of 3D numpy arrays."""
+    filtered = []
+    for p in points:
+        if not filtered or all(np.linalg.norm(p - q) >= tol for q in filtered):
+            filtered.append(p)
+    return np.array(filtered)
 
 def BSplineLst_from_dct(DCT_data, angular_deflection=15,  cutoff_style = 2, closed=False, tol_interp=1e-6, twoD=True):
     if closed and not np.allclose(DCT_data[0], DCT_data[-1]):
@@ -488,6 +495,9 @@ def BSplineLst_from_dct(DCT_data, angular_deflection=15,  cutoff_style = 2, clos
         DCT_data = fuse_rows(DCT_data, 1e-3)  # check all datapoints and merge if allclose is true
     else:
         DCT_data = fuse_rows(DCT_data,1e-6)
+
+    # Remove near-duplicate trailing edge points
+    #DCT_data = remove_near_duplicates(DCT_data, tol_interp/2)
 
     # Find corners and edges of data
     DCT_angles = calc_DCT_angles(DCT_data)

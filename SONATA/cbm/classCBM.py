@@ -7,6 +7,7 @@ https://numpydoc.readthedocs.io/en/latest/format.html
  """
 
 # Core Library modules
+import os
 import copy
 import math
 from collections import OrderedDict
@@ -50,6 +51,7 @@ try:
     from SONATA.anbax.anbax_utl import build_dolfin_mesh, anbax_recovery, ComputeShearCenter, ComputeTensionCenter, ComputeMassCenter
     import sys
     from anba4.anbax import anbax
+
 
 
 except:
@@ -669,6 +671,12 @@ class CBM(object):
         for i,c in enumerate(self.mesh):
             
             c.fm_to_strain = np.zeros((6,6))
+
+        # Reordering is necessary from the conventional stress/strain order
+        # to match the constitutive tensor built from ANBAX.
+        # Both the strains and stresses need reordering so setting it here.
+        # All other orders here were tested and verified to give wrong results.
+        reorder_stress_strain = np.array([1, 2, 0, 4, 5, 3])
         
         # 2. Call ANBA looping over unit forces/moments
         for i in range(6):
@@ -704,27 +712,29 @@ class CBM(object):
                                       tmp_StrainF_tran[j,1,2],
                                       tmp_StrainF_tran[j,2,2]])
 
-                c.fm_to_strain[:, i] = np.array([curr_strain.epsilon11,
-                                                 curr_strain.epsilon22,
-                                                 curr_strain.epsilon33,
-                                                 curr_strain.gamma23,
-                                                 curr_strain.gamma13,
-                                                 curr_strain.gamma12])
+                strain_vec = np.array([curr_strain.epsilon11,
+                                             curr_strain.epsilon22,
+                                             curr_strain.epsilon33,
+                                             curr_strain.gamma23,
+                                             curr_strain.gamma13,
+                                             curr_strain.gamma12])
+                
+                c.fm_to_strain[:, i] = strain_vec[reorder_stress_strain]
 
         # 4. Create a material dictionary for each time scale.
         #    The will loop over those time scales
         time_scale_list = []
         
         for MatID in self.materials:
-            time_scale_list += self.materials[MatID]\
+            
+            if not (self.materials[MatID].viscoelastic == {}):
+                time_scale_list += self.materials[MatID]\
                                     .viscoelastic['time_scales_v'].tolist()
         
         time_scale_list = np.sort(np.unique(time_scale_list)).tolist()
         
         time_scale_mat_dicts = len(time_scale_list) * [None]
-        
-        # breakpoint()
-        
+                
         for i, tau in enumerate(time_scale_list):
             
             curr_materials = OrderedDict()
@@ -733,7 +743,7 @@ class CBM(object):
                 
                 mat = self.materials[MatID]
                 
-                if hasattr(mat, 'viscoelastic'):
+                if hasattr(mat, 'viscoelastic') and not (mat.viscoelastic=={}):
                     found_time_scale = tau in mat.viscoelastic['time_scales_v'].tolist()
                 else:
                     found_time_scale = False
@@ -778,7 +788,6 @@ class CBM(object):
         # 5. calculate integrated element contributions
         # This mapping is just the partial product that maps force/moments
         # back to forces/moments (or time derivatives to be integrated)
-        
         viscoelastic_6x6 = len(time_scale_list) * [None]
         
         for tau_ind, tau in enumerate(time_scale_list):
@@ -787,14 +796,15 @@ class CBM(object):
             
             force_to_forcedot = np.zeros((6,6))
     
-            ze = np.zeros((6,6))
-            ze[0, -1] = 1.0 # shear stress x=2 -> shear force x
-            ze[1, -2] = 1.0 # shear stress y=3 -> shear force y
-            ze[2, 0] = 1.0 # axial stress -> axial force
     
             for i,c in enumerate(self.mesh):
     
                 cxy = c.center
+                
+                ze = np.zeros((6,6))
+                ze[0, -1] = 1.0 # shear stress x=2 -> shear force x
+                ze[1, -2] = 1.0 # shear stress y=3 -> shear force y
+                ze[2, 0] = 1.0 # axial stress -> axial force
     
                 ze[3, 0] = cxy[1] # axial stress -> moment around x
                 ze[4, 0] = -cxy[0] # axial stress -> moment around y
@@ -802,12 +812,13 @@ class CBM(object):
                 ze[-1, -2] = cxy[0] # shear zy (13) stress -> moment around z/torsion
                 ze[-1, -1] = -cxy[1] # shear zx (12) stress -> moment around z/torsion
     
+                ze = ze[:, reorder_stress_strain]
+
                 De = material_dict[c.MatID].rotated_constitutive_tensor(
                                                     c.theta_1[0], c.theta_3)
-    
+
                 force_to_forcedot += c.area * (ze @ De @ c.fm_to_strain)
-                
-                
+
             viscoelastic_6x6[tau_ind] = trsf_sixbysix(force_to_forcedot @ tmp_TS, T)
 
         if test_elastic:
@@ -864,6 +875,227 @@ class CBM(object):
         self.BeamProperties.tau = time_scale_list
         
         return viscoelastic_6x6
+
+
+    def cbm_exp_stress_strain_map(self, station_ind, station_pos, twist,
+                                  **kwargs):
+        """
+        Calculation and save of the map from the 6x6 applied forces to the
+        internal stress and strain at each element
+        
+        Parameters
+        ----------
+        station_ind : int
+            Index of station along the blade. Used in the filename of the
+            output.
+        station_pos : float
+            Fraction of the blade length. Included in output for verification
+            when the outputs are used.
+        output_folder : str, optional
+            Folder to output mapping files to.
+        twist : float
+            Twist angle in radians that the matrices are rotated through for
+            output and thus the stress map should be rotated through the same
+            angle so that `local` forces from GEBT correspond to this stress
+            map set.
+        **kwargs : TYPE
+            Ignored.
+
+        Returns
+        -------
+        None.
+        
+        Notes
+        -----
+        Stress and strain maps are for the SONATA force coordinates to the
+        local (material coordinate direction) stress and strain.
+        
+        Outputs are (6,6,n_elem). First dimension is stress or strain in order
+        [11, 22, 33, 23, 13, 12]. Second dimension is the internal forces then
+        moments. Third dimension is the elements.
+        
+        Outputs are of the form 
+        'blade_station{station_ind}_stress_strain_map.npz'
+        
+        Outputs are engineering shear strain (not elasticity tensor components)
+        
+        The mesh outputs are described by `node_coords` (row `i` has
+        coorindates for node `i`), `cells` (each row has node numbers for the
+        cell), `theta_11` (first cell rotation parameter), `theta_3` (second
+        cell rotation parameter).
+
+        """
+
+        self.mesh, nodes = sort_and_reassignID(self.mesh)
+
+        try:
+            (mesh, matLibrary, materials, plane_orientations,
+             fiber_orientations, maxE) = build_dolfin_mesh(self.mesh,
+                                                       nodes, self.materials)
+        except:
+            print('\n')
+            print('==========================================\n\n')
+            print('Error, Anba4 wrapper called, likely ')
+            print('Anba4 _or_ Dolfin are not installed\n\n')
+            print('==========================================\n\n')
+
+
+        # Call ANBAX with baseline properties
+        anba = anbax(mesh, 1, matLibrary, materials, plane_orientations,
+                     fiber_orientations, maxE)
+        
+        # These lines are necessary for what happens in the objects
+        # not for this outputs here.
+        tmp_TS = anba.compute().getValues(range(6),range(6))    # get stiffness matrix
+        tmp_MM = anba.inertia().getValues(range(6),range(6))    # get mass matrix
+
+        # Define transformation T (from ANBA to SONATA/VABS coordinates)
+        B = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+        T = np.dot(np.identity(3), np.linalg.inv(B))
+        
+            
+        fc_to_strain_m = np.zeros((6,6,len(self.mesh)))
+        fc_to_stress_m = np.zeros((6,6,len(self.mesh)))
+        elem_areas = np.zeros((len(self.mesh)))
+        elem_materials = np.zeros((len(self.mesh)))
+        elem_cxy = np.zeros((len(self.mesh), 2))
+        
+        # 1. Initialize memory on each element to store the mapping
+        # ASSIGN stresses and strains to mesh elements:
+        for i,c in enumerate(self.mesh):
+            
+            elem_areas[i] = c.area
+            elem_materials[i] = c.MatID
+            elem_cxy[i, :] = c.center
+
+        # 2. Call ANBA looping over unit forces/moments
+        
+        # Mapping should match `beam_struct_eval`
+        external_to_internal_ind = [2, 0, 1]
+        for i in range(6):
+            
+            F = np.array([0.0, 0.0, 0.0])
+            M = np.array([0.0, 0.0, 0.0])
+            
+            if i < 3:
+                F[i] = 1.0
+            else:
+                M[i - 3] = 1.0
+                
+            # rotate these forces around any applied twist that would be
+            # applied to the GEBT simulation that way these are still
+            # in the local coordinates of the GEBT simulation
+            R = np.array([[1, 0, 0],
+                          [0,  np.cos(twist), -np.sin(twist)],
+                          [0,  np.sin(twist),  np.cos(twist)]])
+            
+            F = R @ F
+            M = R @ M
+            
+            # rearrange to internal indices
+            F[external_to_internal_ind] = np.copy(F)
+            M[external_to_internal_ind] = np.copy(M)
+
+            # This ends up being potentially excessively slow since
+            # it does a new calculation for each stress and strain field (4),
+            # but only need the material coordinate strain field.
+            [tmp_StressF_tran, tmp_StressF_M_tran, tmp_StrainF_tran, tmp_StrainF_M_tran] = \
+                anbax_recovery(anba, len(self.mesh), F, M,
+                               self.config.anbax_cfg.voigt_convention, T)
+        
+        
+            # 3. Store Strain results in each case / element
+            for j,c in enumerate(self.mesh):
+            
+                # This creates a Strain class object that clearly identifies
+                # elasticity strain tensor components (epsilon) versus
+                # engineering shear strain components (gamma).
+                # While is is probably unneccesary for computation, it is done for
+                # code clarity.
+                curr_strain = Strain([tmp_StrainF_M_tran[j,0,0],
+                                      tmp_StrainF_M_tran[j,0,1],
+                                      tmp_StrainF_M_tran[j,0,2],
+                                      tmp_StrainF_M_tran[j,1,1],
+                                      tmp_StrainF_M_tran[j,1,2],
+                                      tmp_StrainF_M_tran[j,2,2]])
+                
+                
+                curr_stress = Stress([tmp_StressF_M_tran[j,0,0],
+                                      tmp_StressF_M_tran[j,0,1],
+                                      tmp_StressF_M_tran[j,0,2],
+                                      tmp_StressF_M_tran[j,1,1],
+                                      tmp_StressF_M_tran[j,1,2],
+                                      tmp_StressF_M_tran[j,2,2]])
+
+                fc_to_strain_m[:, i, j] = np.array([curr_strain.epsilon11,
+                                                    curr_strain.epsilon22,
+                                                    curr_strain.epsilon33,
+                                                    curr_strain.gamma23,
+                                                    curr_strain.gamma13,
+                                                    curr_strain.gamma12])
+
+                fc_to_stress_m[:, i, j] = np.array([curr_stress.sigma11,
+                                                    curr_stress.sigma22,
+                                                    curr_stress.sigma33,
+                                                    curr_stress.sigma23,
+                                                    curr_stress.sigma13,
+                                                    curr_stress.sigma12])
+                
+        # Save the material names as strings to be output
+        material_names = (np.max([mat for mat in self.materials]) + 1)*['None']
+        
+        for mat in self.materials:
+            material_names[mat] = self.materials[mat].name
+            
+        ##################
+        # format mesh information
+
+        n_nodes = len(nodes)
+        
+        node_coords = np.full((n_nodes, 2), np.nan)
+        cells = np.zeros((len(self.mesh), 3), np.int64)
+        theta_11 = np.zeros(len(self.mesh))
+        theta_3 = np.zeros(len(self.mesh))
+        
+        for ind,cell_i in enumerate(self.mesh):
+            cells[ind] = [n.id-1 for n in cell_i.nodes]
+            
+            theta_11[ind] = cell_i.theta_11
+            theta_3[ind] = cell_i.theta_3
+            
+            for n in cell_i.nodes:
+                node_coords[n.id-1] = [n.Pnt2d.X(), n.Pnt2d.Y()]
+                
+        ##################
+        # output information
+        
+        if 'output_folder' in kwargs.keys():
+            folder = kwargs['output_folder']
+        else:
+            folder = 'stress-map'
+        
+        # Output File with Data
+        fname = os.path.join(folder,
+             'blade_station{:04d}_stress_strain_map.npz'.format(station_ind))
+        
+        os.makedirs(folder, exist_ok=True)
+        
+        np.savez(fname,
+                 station_pos=station_pos,
+                 station_ind=station_ind,
+                 fc_to_strain_m=fc_to_strain_m,
+                 fc_to_stress_m=fc_to_stress_m,
+                 elem_areas=elem_areas,
+                 elem_materials=elem_materials,
+                 material_names=np.asarray(material_names),
+                 elem_cxy=elem_cxy,
+                 node_coords=node_coords,
+                 cells=cells,
+                 theta_11=theta_11,
+                 theta_3=theta_3,
+                 allow_pickle=False)
+
+        return
 
     def cbm_exp_BeamDyn_beamprops(self, Theta=0, solver="vabs"):
         """ 

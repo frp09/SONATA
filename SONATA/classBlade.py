@@ -12,7 +12,7 @@ import yaml
 # from jsonschema import validate
 from OCC.Core.gp import (gp_Ax1, gp_Ax2, gp_Ax3, gp_Dir, gp_Pln,
                          gp_Pnt, gp_Pnt2d, gp_Trsf, gp_Vec,)
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, PchipInterpolator
 
 # First party modules
 from SONATA.cbm.classCBM import CBM
@@ -156,8 +156,12 @@ class Blade(Component):
         "add_function_to_menu",
         "yml",
         "loft",
-        "cutoff_style"
+        "cutoff_style",
+        "true_twist",
     )
+    
+    # real twist value that is set if twist is set to zero for outputing
+    # matrices at zero twist
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -170,13 +174,42 @@ class Blade(Component):
                 inputs  = myfile.read()
                 yml = yaml.load(inputs, Loader = yaml.FullLoader)
                 self.yml = yml
+            
+            airfoils = [Airfoil(af) for af in yml.get('airfoils')]
+            self.materials = read_materials(yml.get('materials'))
+            
+            self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
+            
+        elif 'weis_dict' in kwargs:
+            yml = kwargs.get('weis_dict')
+            self.yml = yml
 
             
             airfoils = [Airfoil(af) for af in yml.get('airfoils')]
             self.materials = read_materials(yml.get('materials'))
             
             self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
+            
+            
+    # def __init__(self, *args, **kwargs):
+        # super().__init__(*args, **kwargs)
+        # self.beam_properties = None
+        # self.loft=None
+        
+        # if 'filename' in kwargs:
+            # filename = kwargs.get('filename')
+            # with open(filename, 'r') as myfile:
+                # inputs  = myfile.read()
+                # yml = yaml.load(inputs, Loader = yaml.FullLoader)
+                # self.yml = yml
 
+            
+            # airfoils = [Airfoil(af) for af in yml.get('airfoils')]
+            # self.materials = read_materials(yml.get('materials'))
+            
+            # self.read_yaml(yml.get('components').get('blade'), airfoils, **kwargs)
+
+        self.true_twist = None
             
 #    def __repr__(self):
 #        """__repr__ is the built-in function used to compute the "official" 
@@ -425,7 +458,7 @@ class Blade(Component):
                                          tmp_blra[:,0], tmp_bera[:,0],
                                          tmp_pa[:,0], arr[:,0], cs_pos))))
 
-        self.airfoils = np.asarray([[x, interp_airfoil_position(airfoil_position, airfoils, x)] for x in x])
+        self.airfoils = np.asarray([[x, interp_airfoil_position(airfoil_position, airfoils, x, f_chord=self.f_chord, f_pa=self.f_pa)] for x in x])
         self.blade_ref_axis = np.hstack((np.expand_dims(x, axis=1), self.f_blade_ref_axis.interpolate(x)[0]))
         self.beam_ref_axis = np.hstack((np.expand_dims(x, axis=1), self.f_beam_ref_axis.interpolate(x)[0]))
         self.chord = np.vstack((x, self.f_chord(x))).T
@@ -606,7 +639,72 @@ class Blade(Component):
 
         return None
 
-     
+    def blade_exp_stress_strain_map(self, flag_output_zero_twist=False,
+                                    **kwargs):
+        """
+        Creates outputs for stress and strain recovery maps.
+
+        Parameters
+        ----------
+        output_folder : str, optional
+            Folder to output mapping files to.
+        flag_output_zero_twist : bool, optional
+            Flag indicating that the 6x6 stiffness matrices will be output
+            at zero twist and thus the local forces used in these mappings
+            will also be rotated to that zero twist.
+        **kwargs : TYPE
+            Passed to section. Options/defaults include
+            `output_folder='stress-map'`
+
+        Returns
+        -------
+        None.
+        
+        Notes
+        -----
+        
+        Saves out npz files for each station to map from sectional internal
+        forces and moments to stress and strain in each element.
+        
+        The maps have keys in the file of `fc_to_strain_m` and
+        `fc_to_stress_m`.
+        These maps are (6,6,Nelem). For each element index in the third
+        position, the 6x6 matrix can multiply the local internal stresses.
+        These maps are to the strain and stress respectively in the material
+        coordinates.
+        
+        Stresses and strains are in order [11, 22, 33, 23, 13, 12]
+        
+        Additional documentation available on `cbm_exp_stress_strain_map`
+
+        """
+        
+        ac = ANBAXConfig()
+        for ind,(x, cs) in enumerate(self.sections):
+
+            cs.config.anbax_cfg = ac
+
+            print("STATUS:\t Running Stress and Strain Maps at %s" % (x))
+            
+            curr_twist = 0
+            if self.true_twist is not None:
+                curr_twist = self.true_twist[ind]
+
+                print("STATUS:\t Output twist at section is %s" % (curr_twist))
+                
+            elif flag_output_zero_twist:
+                twist_interp = PchipInterpolator(self.twist[:, 0],
+                                                 self.twist[:, 1])
+
+                # this should just be the same as evaluating at `x`.
+                curr_twist = twist_interp(self.beam_properties[ind][0])
+
+                print("STATUS:\t Output twist at section is %s" % (curr_twist))
+
+            cs.cbm_exp_stress_strain_map(ind, x, curr_twist, **kwargs)
+        pass
+
+
     def blade_exp_beam_props(self, cosy='local', style='DYMORE', eta_offset=0, solver='vabs', filename = None):
         """
         Exports the beam_properties in the 
